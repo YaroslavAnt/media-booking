@@ -4,9 +4,29 @@
       <router-link to="/">Фільми</router-link> |
       <router-link to="/sessions">Сеанси</router-link>
     </nav>
+    <b-alert
+      :show="message.length"
+      dismissible
+      @dismissed="hideAlert"
+      v-bind="attrs"
+    >
+      {{ message }}
+    </b-alert>
     <router-view />
   </b-container>
 </template>
+
+<script>
+import { mapActions, mapState } from 'vuex';
+export default {
+  computed: {
+    ...mapState('alert', ['message', 'attrs']),
+  },
+  methods: {
+    ...mapActions('alert', ['hideAlert']),
+  },
+};
+</script>
 
 <style>
 nav {

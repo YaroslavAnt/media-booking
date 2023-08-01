@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-form @submit.prevent="onSubmit" @reset.prevent="onReset">
+    <b-form @submit.prevent="submitForm" @reset.prevent="resetForm">
       <b-form-group
         :label="label"
         v-for="({ type, component, label }, key) of form"
@@ -13,15 +13,18 @@
           :options="form[key].options"
         >
           <template #first>
-            <b-form-select-option value="" disabled
-              >-- Оберіть одну з опцій --</b-form-select-option
-            >
+            <b-form-select-option value="" disabled>
+              -- Оберіть одну з опцій --
+            </b-form-select-option>
           </template>
         </component>
       </b-form-group>
 
-      <b-button class="my-2" type="submit" variant="primary">
+      <b-button class="m-2" type="submit" variant="primary">
         Бронювати
+      </b-button>
+      <b-button class="m-2" type="reset" variant="secondary">
+        Відмінити
       </b-button>
     </b-form>
   </div>
@@ -63,7 +66,7 @@ export default {
     ...mapActions('sessions', ['getSessions']),
     ...mapActions('booking', ['bookTicket']),
 
-    onSubmit() {
+    async submitForm() {
       const formEntries = Object.entries(this.form).map(([key, val]) => [
         key,
         val.value,
@@ -71,11 +74,17 @@ export default {
 
       const submitObject = Object.fromEntries(formEntries);
 
-      console.log({ submitObject });
-
       this.bookTicket({
         ...submitObject,
         movie_id: this.movieId,
+      });
+
+      this.resetForm();
+    },
+
+    resetForm() {
+      Object.keys(this.form).forEach((key) => {
+        this.form[key].value = null;
       });
     },
   },
